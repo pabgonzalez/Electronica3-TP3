@@ -1,8 +1,0 @@
-[Version]
-Version=11.1
-[Designs]
-Semaforos=Semaforos.adf
-[Settings]
-Active=Semaforos
-[Expand]
-semaforos=1
