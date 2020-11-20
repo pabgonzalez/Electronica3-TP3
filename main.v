@@ -6,36 +6,40 @@ input wire gpio_34, 	//change
 output wire gpio_31, 	//green
 output wire gpio_35, 	//yellow
 output wire gpio_32,  	//red 
-output reg gpio_2   //test
-);
+input wire gpio_2,   //set
+output wire gpio_43 //test
+); 
+
+//Clocks
 SB_LFOSC OSCInst0(.CLKLFEN(1'b1), .CLKLFPU(1'b1), .CLKLF(CLK_10k));      
-wire CLK_6M;   
+wire CLK_3M;   
 SB_HFOSC OSCInst1(.CLKHFEN(1'b1), .CLKHFPU(1'b1), .CLKHF(CLK_HF));   //clock general de 48MHz
-clock_divider clock6M(.clk_in(CLK_HF), .clk_out(CLK_6M));     
+clock_divider clock3M(.clk_in(CLK_HF), .clk_out(CLK_3M));     
 
 //wire [31:0] ms = 32'b0;
 wire [31:0] ms;                                  
 chronometer C1(.miliseconds(ms), .CLK(CLK_10k)); 
 
-semaforo S1(.EN(gpio_37), .RST(gpio_42), .CHANGE(gpio_34), .CLK(CLK_6M), .CHRONO(ms), .GREEN(gpio_31), .YELLOW(gpio_35), .RED(gpio_32)); 
+semaforo S1(.en(gpio_37), .reset(gpio_42), .set(gpio_2), .change(gpio_34), .clkhf(CLK_3M), .clklf(CLK_10k), .green(gpio_31), .yellow(gpio_35), .red(gpio_32), .test(gpio_43)); 
 
-always @ (ms)
+/*always @ (ms)
 	begin   
 		if (ms < 5000)
 			gpio_2 = 1;
 		else 
 			gpio_2 = 0;
-	end    
-endmodule  
+	end   */
+	 
+endmodule     
 
 //cronometro
 module chronometer
 (
 output reg [31:0] miliseconds,
-input wire CLK
+input wire CLK   //10k
 );      
 
-parameter max_time = 32'hFFFFFFFF; //10 segundos          
+parameter max_time = 10*1000; //10 segundos          
 reg [3:0] count = 0; 
 parameter cycle = 10;
 always @ (posedge CLK)
@@ -103,4 +107,5 @@ module semaphore_control
 		end    
 
 endmodule     
-	*/
+	*/                    
+	
