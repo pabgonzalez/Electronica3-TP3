@@ -1,12 +1,13 @@
-module Timer (CLK, secondsToCount,startCounting,timeFinished);
+module timeCounter (clk, secondsToCount,startCounting,timeFinished);
 	
-	input CLK;
-  input secondsToCount;
-  input startCounting;
+	input clk;
+  	input secondsToCount;
+  	input startCounting;
 
 	
 	output timeFinished;
-	
+	reg timeFinished;
+
 	// Time in Seconds
 	reg[6:0] timeInSeconds;
 	
@@ -16,29 +17,35 @@ module Timer (CLK, secondsToCount,startCounting,timeFinished);
   //Time In Cycles to Compare
   
 	parameter ONE_SECOND= 14'd9999;
-
+	string test = "Estoy aca";
 	
+													
 	always @(posedge clk)
-		begin
-			timeFinished<= 0; 
-      timeClockCount = timeClockCount+1;
-			
-			//El contador de ciclos va de 0 a 9999 (es decir, cuenta 1 segundo).
-			if(timeClockCount == ONE_SECOND)
-				timeInSeconds <= timeInSeconds + 1;
-        timeClockCount <= 0;
-			else
-				timeClockCount <= timeClockCount+1;
-			
+		begin		
+			timeFinished <= 0;
+			if(timeFinished == 0)	  
+				begin	
+					timeClockCount <= timeClockCount+1;	
+					$display("%d timeClockCount", timeClockCount);
+					if(timeClockCount == ONE_SECOND)
+						//begin
+							timeInSeconds <= timeInSeconds + 1;
+							$display("%d SEGUNDOS", timeInSeconds);
+        					timeClockCount <= 0;	  
+				
+						//end
+				end
+				
 			if(startCounting) //Si se resetea, autom�ticamente se pone expired en cero.
-				begin
+				//begin 
 					timeClockCount <= 0;
 					timeInSeconds <= 0;
-			 	end
+			 	//end
 			
 			if (timeInSeconds==secondsToCount) //Si cuento un segundo de clock, reseteo el contador de ciclos y disminuyo en uno la cantidad e segundos que falta contar
 				begin
 					timeFinished <= 1; //Veo si ya termin� de contar los N segundos que correspond�an.
+					$display("TERMINO");
 				end
 		end
 endmodule
@@ -49,30 +56,42 @@ endmodule
 module testTimer();	
 	reg startCounting;
 	reg[6:0] secondsToCount;
-	reg startTimer;
 	wire expired;
 	wire oneHztmp;
-	reg clk;
+	reg clk;   	  
+	string testMsg = "HOLIS";
 	
 	timeCounter test(clk, secondsToCount, startCounting, timeFinished);
 	
+	initial
+		begin
+	clk <= 1'b0; 
+		end
+		
 	//Comienza testeo
 	initial begin
-		clk=0;
+		
 		forever #100000ns clk = ~ clk;
-	end
+	end	  
 	
-	initial begin
+	initial begin	
+		
 		$display("starting test");
+		#1s
+		startCounting = 0;
+		secondsToCount = 5;	
 		
-		startCounting=1;
-		secondsToCount = 5;	 
+		#5s
+		startCounting = 0;
+		secondsToCount = 1;	
 		
 	end
 
-  test.timeInSeconds
-
-  always @*
-    $display("%d",test.secondsToCount);
-	
+  /*always @(posedge clk)	   							   
+	  
+	  begin
+		//$display("%d secondsToCount",test.secondsToCount);	
+		//$display("%d timeClockCount",test.timeClockCount);	  
+		//$display("%d clk",clk);	 		
+	  end	*/
 endmodule
