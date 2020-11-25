@@ -15,6 +15,11 @@ module fsm
     output reg CG3
   );
 
+  //Elemento que contará los segundos
+
+    timeCounter myTimeCounter ()  
+
+
 
   //Tabla de tiempos del estado 1
     reg [7:0] time_E1 [3:0];
@@ -62,30 +67,30 @@ module fsm
   
     always @ (SNN or SNS or STH)
         begin
-        //CASO 4
+      //CASO 4
         if ( !SNS & !SNN & STH & (estado != 3) )
             begin
-                tabla = 'B';
-                estado = 3; //norton al norte en verde
-                index = 1;
+                tabla <= 'B';
+                estado <= 3; //norton al norte en verde
+                index <= 1;
             end
       // CASO 5
         else if ( !SNS & SNN &  !STH & (estado != 5) )
             begin
-                tabla = 'C';
-                estado = 5; //norton al norte en verde
+                tabla <= 'C';
+                estado <= 5; //norton al norte en verde
             end
       // CASO 6
         else if ( SNS & !SNN & !STH & (estado != 4) )
             begin
-                tabla = 'D';
-                estado = 4; //norton al norte en verde
+                tabla <= 'D';
+                estado <= 4; //norton al norte en verde
             end
       // CASO 1
         else 
             begin
-                tabla = 'A';
-                estado = estado + 1; 
+                tabla <= 'A';
+                estado <= estado + 1; 
             end
         end
         
@@ -94,13 +99,102 @@ module fsm
     always @ (posedge CLK, estado)
         begin
             case (estado)
-                1:      if (tabla ==)
-                2:
-                3:
-                4:
-                5:
+                1:if (tabla == 'A')
+                      begin
+                        
+                      end
+                  elif (tabla == 'B')
+                      begin
+                        
+                      end
+                  elif (tabla == 'C')
+                      begin
+                        
+                      end
+                  elif (tabla == 'D')
+                      begin
+                        
+                      end
+
+                2:if (tabla == 'A')
+                      begin
+                        
+                      end
+                  elif (tabla == 'B')
+                      begin
+                        
+                      end
+                  elif (tabla == 'C')
+                      begin
+                        
+                      end
+                  elif (tabla == 'D')
+                      begin
+                        
+                      end
+                3:if (tabla == 'A')
+                      begin
+                        
+                      end
+                  elif (tabla == 'B')
+                      begin
+                        
+                      end
+                  elif (tabla == 'C')
+                      begin
+                        
+                      end
+                  elif (tabla == 'D')
+                      begin
+                        
+                      end
+                4:if (tabla == 'A')
+                      begin
+                        
+                      end
+                  elif (tabla == 'B')
+                      begin
+                        
+                      end
+                  elif (tabla == 'C')
+                      begin
+                        
+                      end
+                  elif (tabla == 'D')
+                      begin
+                        
+                      end
+                5:if (tabla == 'A')
+                      begin
+                        
+                      end
+                  elif (tabla == 'B')
+                      begin
+                        
+                      end
+                  elif (tabla == 'C')
+                      begin
+                        
+                      end
+                  elif (tabla == 'D')
+                      begin
+                        
+                      end
         end
 
+
+    if(reset) //Si se resetea, autom�ticamente se pone expired en cero.
+				begin
+					expired <= 0;
+					count <= MAXCOUNT;
+			 	end
+				 
+			else if(startTimer)	 //Si es la primera vez, startTimer==1, luego cargo la tabla de tiempos e inicializo todo.
+				begin
+					expired <= 0;
+					clkCycleCount <= CLK_ZERO_COUNT;
+					count <= timeParameter;
+				end
 
 
     //Next-state logic

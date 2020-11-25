@@ -1,9 +1,9 @@
-module Timer (CLK, secondsToCount,startCounting);
+module Timer (CLK, secondsToCount,startCounting,timeFinished);
 	
 	input CLK;
   input secondsToCount;
   input startCounting;
-  input resetCounter;
+
 	
 	output timeFinished;
 	
@@ -46,38 +46,15 @@ endmodule
 //testbench para el Timer
 
 
-/*module testTimer();	
-	reg reset;
-	reg[6:0] timeParameter;
+module testTimer();	
+	reg startCounting;
+	reg[6:0] secondsToCount;
 	reg startTimer;
 	wire expired;
 	wire oneHztmp;
 	reg clk;
 	
-	Timer test(clk, reset, timeParameter, startTimer, expired);
-	
-	/*Tasks para ayudar en la verificaci�n
-	task assertCycleCount;
-		input[13:0]	clkCycleCount;
-		if(test.clkCycleCount !== clkCycleCount)
-			begin
-				$display("error");
-				$display("expected: %d", clkCycleCount);
-				$display("got: %d", test.clkCycleCount);
-				$stop();
-			end
-	endtask
-	
-	task assertExpired;
-		input exp;
-		if(test.expired !== exp)
-			begin
-				$display("error: expired");
-				$display("expected: %d", exp);
-				$display("got: %d", test.expired);
-				$stop();
-			end
-	endtask
+	timeCounter test(clk, secondsToCount, startCounting, timeFinished);
 	
 	//Comienza testeo
 	initial begin
@@ -88,72 +65,14 @@ endmodule
 	initial begin
 		$display("starting test");
 		
-		reset=0;
-		timeParameter = 5;	 
-		startTimer = 0;
-		#1s
+		startCounting=1;
+		secondsToCount = 5;	 
 		
-		//assetCycleCount(14'd0);
-		//assertExpired(0); 
-		
-		reset=0;
-		startTimer=1;
-		
-		#1s
-		//assetCycleCount(14'd0);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd1);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd2);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd9997);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd9998);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd9990);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd0);
-		//assertExpired(1); 
-		
-		startTimer=0;
-		
-		#1s
-		//assetCycleCount(14'd1);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		
-		#14s
-		//assetCycleCount(14'd2);
-		//assertExpired(0); 
-		
-		startTimer=0;
-		$finish;
-		//$display ("Passed Test");
-	end	
+	end
+
+  test.timeInSeconds
+
+  always @*
+    $display("%d",test.secondsToCount);
 	
-endmodule*/
+endmodule
