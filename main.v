@@ -24,15 +24,21 @@ wire [31:0] ms;
 chronometer C1(.miliseconds(ms), .CLK(CLK_10k)); 
 
 semaforo S1(.en(gpio_37), .reset(gpio_31), .set(gpio_32), .change(gpio_27), .clklf(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); 
+//instanciar 3 semaforo 
+//instanciar 6 semaforo2
+//instanciar cronometro
+//instanciar FSM
 //semaforo2 S2(.en(gpio_37), .reset(gpio_31), .set(gpio_42), .change(gpio_36), .clklf(CLK_10k), .green(gpio_43), .red(gpio_34));
-	 
+
+
 endmodule     
    
 //cronometro
 module chronometer
 (
 output reg [31:0] miliseconds,
-input wire CLK   //10k
+input wire CLK,   //10k
+input wire reset
 );      
 
 parameter max_time = 10*1000; //10 segundos          
@@ -47,6 +53,11 @@ always @ (posedge CLK)
 			count = 0; 
 		if (miliseconds >= max_time)
 			miliseconds = 32'b0;              
+	end
+always @ (reset)
+	begin
+		if (reset == 1)
+			miliseconds = 0;
 	end
 endmodule      
 
