@@ -80,7 +80,7 @@ semaforo2 giro_NN_L(.en(gpio_2), .reset(gpio_28), .set(set_Giro_NN_izq), .change
 semaforo2 giro_NN_R(.en(gpio_2), .reset(gpio_28), .set(set_Giro_NN_der), .change(CGiro_NN_der), .clklf(CLK_10k), .green(gpio_44), .red(gpio_6)); //G NN R
 
 semaforo2 peatonal_TH_1(.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_peaton_TH1), .change(CSemaforo_peaton_TH1), .clklf(CLK_10k), .green(gpio_11), .red(gpio_9)); //P th1
-semaforo2 peatonal_TH_1 (.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_peaton_TH2), .change(CSemaforo_peaton_TH2), .clklf(CLK_10k), .green(gpio_19), .red(gpio_18)); //P th2
+semaforo2 peatonal_TH_2 (.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_peaton_TH2), .change(CSemaforo_peaton_TH2), .clklf(CLK_10k), .green(gpio_19), .red(gpio_18)); //P th2
 semaforo2 peatonal_N (.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_peaton_N), .change(CSemaforo_peaton_N), .clklf(CLK_10k), .green(gpio_21), .red(gpio_13)); //P n
 
 endmodule     
