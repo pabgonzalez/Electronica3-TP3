@@ -13,9 +13,9 @@ output wire gpio_23,  	//red STH
 output wire gpio_35, 	//green SNN
 output wire gpio_32, 	//yellow SNN
 output wire gpio_27,  	//red SNN  
-output wire gpio_34, 	//green STH
-output wire gpio_37, 	//yellow STH
-output wire gpio_31,  	//red STH  
+output wire gpio_34, 	//green SNS
+output wire gpio_37, 	//yellow SNS
+output wire gpio_31,  	//red SNS
 
 output wire gpio_36, 	//green GTH
 output wire gpio_43,  	//red GTH  
@@ -55,6 +55,7 @@ wire CSemaforo_NN; //change S1
 wire CSemaforo_NS;
 wire CSemaforo_TH;
 wire CGiro_NN_izq;
+wire CGiro_NN_der;
 wire CGiro_TH_izq;
 wire CSemaforo_peaton_N;
 wire CSemaforo_peaton_TH1;
@@ -70,12 +71,17 @@ wire set_Semaforo_peaton_N;
 wire set_Semaforo_peaton_TH1;
 wire set_Semaforo_peaton_TH2;
 
-semaforo S1(.en(gpio_37), .reset(gpio_28), .set(gpio_32), .change(gpio_27), .clklf(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); 
-semaforo2 G1(.en(gpio_37), .reset(gpio_28), .set(gpio_42), .change(gpio_36), .clklf(CLK_10k), .green(gpio_43), .red(gpio_34));
+semaforo S1(.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_TH), .change(CSemaforo_TH), .clklf(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); //thevenin
+semaforo S2(.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_NN), .change(CSemaforo_NN), .clklf(CLK_10k), .green(gpio_35), .yellow(gpio_32), .red(gpio_27)); //norton norte 
+semaforo S3(.en(gpio_2), .reset(gpio_28), .set(set_Semaforo_NS), .change(CSemaforo_NS), .clklf(CLK_10k), .green(gpio_34), .yellow(gpio_37), .red(gpio_31)); //norton sur
+
+semaforo2 G1(.en(gpio_37), .reset(gpio_31), .set(set_Giro_TH_izq), .change(CGiro_TH_izq), .clklf(CLK_10k), .green(gpio_43), .red(gpio_36)); //G TH
+semaforo2 G2(.en(gpio_37), .reset(gpio_31), .set(set_Giro_NN_izq), .change(CGiro_NN_izq), .clklf(CLK_10k), .green(gpio_38), .red(gpio_42)); //G NN L
+semaforo2 G3(.en(gpio_37), .reset(gpio_31), .set(set_Giro_NN_der), .change(CGiro_NN_der), .clklf(CLK_10k), .green(gpio_44), .red(gpio_6)); //G NN R
 
 		 
 endmodule     
-   
+
 //cronometro
 module chronometer
 (
