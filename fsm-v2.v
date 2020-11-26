@@ -117,19 +117,22 @@ module fsm
         if ( !SNS & !SNN & STH & (estado != 3) )
             begin
                 tabla <= B;
-                estado <= 3; //thevenin al este
+                estado <= 3; //thevenin al este  
+                reset_chrono = 1;
             end
       // CASO 5
         else if ( !SNS & SNN &  !STH & (estado != 5) )
             begin
                 tabla <= C;
-                estado <= 5; //norton al norte en verde
+                estado <= 5; //norton al norte en verde 
+                reset_chrono = 1;
             end
       // CASO 6
         else if ( SNS & !SNN & !STH & (estado != 4) )
             begin
                 tabla <= D;
-                estado <= 4; //norton al sur
+                estado <= 4; //norton al sur       
+                reset_chrono = 1;
             end
 
         /*pulsador
@@ -169,7 +172,8 @@ module fsm
                             	set_Giro_TH_izq <= 0;
                             	set_Semaforo_peaton_N <= 1;
                             	set_Semaforo_peaton_TH1 <= 0;
-                            	set_Semaforo_peaton_TH2 <= 1;   
+                            	set_Semaforo_peaton_TH2 <= 1;    
+                            	reset_chrono = 1;
                             	estado = 1;
                             end
                     end
