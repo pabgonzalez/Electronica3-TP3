@@ -6,12 +6,10 @@ module semaforo
   		input wire reset, 
 		input wire set,	
 		input wire change,	
-		input wire clkhf,   //no need
 		input wire clklf, 
 		output reg green,  
 		output reg yellow, 
-		output reg red,
-		output reg test	 
+		output reg red
 	);
 	        
 	parameter RED = 3'b001;

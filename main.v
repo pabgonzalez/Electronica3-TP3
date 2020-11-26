@@ -1,13 +1,16 @@
 module main
 (   
 input wire gpio_37, 	//enable
-input wire gpio_42, 	//reset
-input wire gpio_34, 	//change
-output wire gpio_31, 	//green
-output wire gpio_35, 	//yellow
-output wire gpio_32,  	//red 
-input wire gpio_2,   //set
-output wire gpio_43 //test
+input wire gpio_31, 	//reset
+input wire gpio_32,     //set S1
+input wire gpio_27,		//change S1
+output wire gpio_26, 	//green S1
+output wire gpio_25, 	//yellow S1
+output wire gpio_23,  	//red S1   
+input wire gpio_42, 	//set S2
+input wire gpio_36,   	//change S2
+output wire gpio_43, 	//green S2
+output wire gpio_34		//red S2
 ); 
 
 //Clocks
@@ -20,18 +23,11 @@ clock_divider clock3M(.clk_in(CLK_HF), .clk_out(CLK_3M));
 wire [31:0] ms;                                  
 chronometer C1(.miliseconds(ms), .CLK(CLK_10k)); 
 
-semaforo S1(.en(gpio_37), .reset(gpio_42), .set(gpio_2), .change(gpio_34), .clkhf(CLK_3M), .clklf(CLK_10k), .green(gpio_31), .yellow(gpio_35), .red(gpio_32), .test(gpio_43)); 
-
-/*always @ (ms)
-	begin   
-		if (ms < 5000)
-			gpio_2 = 1;
-		else 
-			gpio_2 = 0;
-	end   */
+semaforo S1(.en(gpio_37), .reset(gpio_31), .set(gpio_32), .change(gpio_27), .clklf(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); 
+//semaforo2 S2(.en(gpio_37), .reset(gpio_31), .set(gpio_42), .change(gpio_36), .clklf(CLK_10k), .green(gpio_43), .red(gpio_34));
 	 
 endmodule     
-
+   
 //cronometro
 module chronometer
 (
@@ -75,37 +71,3 @@ output reg clk_out
     	end
 endmodule 
 
-/*
-module semaphore_control
-(                  
-	input wire CLK,    
-	input wire ms, 
-	wire alternate,
-	output wire change
-);                  
-	reg waiting = 0;
-	reg [15:0] start = 0;
-	always @ (posedge CLK)
-		begin  
-			if ( change )
-				begin
-					change = 0;
-					waiting = 1;   
-				end
-			if ( alternate )
-				begin
-					change = 1;
-					alternate = 0; 
-				end
-			else
-				change = 0;    
-			if ( waiting ) 
-				begin
-					start = ms;
-					waiting = 0;
-				end
-		end    
-
-endmodule     
-	*/                    
-	
