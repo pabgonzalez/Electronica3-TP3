@@ -1,30 +1,39 @@
 module fsm
   (
-    input wire CLK, //48MHz
+    input wire red_check_SemaforoNN_E6,
+    input wire [31:0] ms, //milisecond
+    input wire reset_chrono,
+    input wire CLK, //10kHz
     input wire SNN, //sensor Norton Norte
     input wire SNS,
     input wire STH,
     input wire PNN, //Pulsador Norton Norte
     input wire PNS,
     input wire PTH,
-    output reg CS1, //change S1
-    output reg CS2,
-    output reg CS3,
-    output reg CG1,
-    output reg CG2,
-    output reg CG3
+    output reg CSemaforo_NN, //change S1
+    output reg CSemaforo_NS,
+    output reg CSemaforo_TH,
+    output reg CGiro_NN_izq,
+    output reg CGiro_NN_der,
+    output reg CGiro_TH_izq,
+    output reg CSemaforo_peaton_N,
+    output reg CSemaforo_peaton_TH1,
+    output reg CSemaforo_peaton_TH2
   );
 
   //Elemento que contará los segundos
 
-    timeCounter myTimeCounter ()  
+   // timeCounter myTimeCounter ()  
 
-
+    parameter [2:1] A = 2'b00;
+    parameter [2:1] B = 2'b01;
+    parameter [2:1] C = 2'b10;
+    parameter [2:1] D = 2'b11;
 
   //Tabla de tiempos del estado 1
     reg [7:0] time_E1 [3:0];
     time_E1[0] = 17; //Tabla A
-    time_E1[1] = 3; //Tabla B
+    time_E1[1] = 17; //Tabla B
     time_E1[2] = 17; //Tabla C
     time_E1[3] = 17; //Tabla D
 
@@ -60,9 +69,15 @@ module fsm
     time_E5[2] = 48; //Tabla C
     time_E5[3] = 12; //Tabla D
 
+    //chequear que este en el rojo del estado 1
 
+    reg [7:0] time_E6 [3:0];
+    time_E6[0] = 24; //Tabla A
+    time_E6[1] = 12; //Tabla B
+    time_E6[2] = 48; //Tabla C
+    time_E6[3] = 12; //Tabla D
   
-    reg[7:0] tabla = 'A';
+    reg[3:1] tabla = A;
     reg[7:0] estado = 1;
   
     always @ (SNN or SNS or STH)
@@ -70,163 +85,100 @@ module fsm
       //CASO 4
         if ( !SNS & !SNN & STH & (estado != 3) )
             begin
-                tabla <= 'B';
-                estado <= 3; //norton al norte en verde
-                index <= 1;
+                tabla <= B;
+                estado <= 3; //thevenin al este
             end
       // CASO 5
         else if ( !SNS & SNN &  !STH & (estado != 5) )
             begin
-                tabla <= 'C';
+                tabla <= C;
                 estado <= 5; //norton al norte en verde
             end
       // CASO 6
         else if ( SNS & !SNN & !STH & (estado != 4) )
             begin
-                tabla <= 'D';
-                estado <= 4; //norton al norte en verde
+                tabla <= D;
+                estado <= 4; //norton al sur
             end
+
+        /*pulsador
+        else if (!SNS & !SNN & !STH)
+            begin
+
+            end
+        */ 
+
       // CASO 1
         else 
             begin
-                tabla <= 'A';
-                estado <= estado + 1; 
+                tabla <= A;
+                //estado <= estado + 1; 
             end
         end
-        
-        
+     
   //loop de estados
-    always @ (posedge CLK, estado)
+    always @ (posedge CLK)
         begin
-            case (estado)
-                1:if (tabla == 'A')
-                      begin
-                        
-                      end
-                  elif (tabla == 'B')
-                      begin
-                        
-                      end
-                  elif (tabla == 'C')
-                      begin
-                        
-                      end
-                  elif (tabla == 'D')
-                      begin
-                        
-                      end
+            if (reset_chrono == 1)
+                reset_chrono <= 0;
 
-                2:if (tabla == 'A')
-                      begin
-                        
-                      end
-                  elif (tabla == 'B')
-                      begin
-                        
-                      end
-                  elif (tabla == 'C')
-                      begin
-                        
-                      end
-                  elif (tabla == 'D')
-                      begin
-                        
-                      end
-                3:if (tabla == 'A')
-                      begin
-                        
-                      end
-                  elif (tabla == 'B')
-                      begin
-                        
-                      end
-                  elif (tabla == 'C')
-                      begin
-                        
-                      end
-                  elif (tabla == 'D')
-                      begin
-                        
-                      end
-                4:if (tabla == 'A')
-                      begin
-                        
-                      end
-                  elif (tabla == 'B')
-                      begin
-                        
-                      end
-                  elif (tabla == 'C')
-                      begin
-                        
-                      end
-                  elif (tabla == 'D')
-                      begin
-                        
-                      end
-                5:if (tabla == 'A')
-                      begin
-                        
-                      end
-                  elif (tabla == 'B')
-                      begin
-                        
-                      end
-                  elif (tabla == 'C')
-                      begin
-                        
-                      end
-                  elif (tabla == 'D')
-                      begin
-                        
-                      end
+                case (estado)
+                    1: 
+                    begin
+                        if (ms >= time_E1[tabla])
+                            begin
+                                estado = estado + 1;
+                                reset_chrono <= 1;
+                                //cambio de luces 
+                            end
+                    end
+
+                    2:
+                    begin
+                        if (ms >= time_E2[tabla])
+                            begin
+                                estado = estado + 1;
+                                reset_chrono <= 1;
+
+                            end
+                    end
+                    
+                    3: 
+                    begin
+                        if (ms >= time_E3[tabla])
+                            begin
+                                estado = estado + 1;
+                                reset_chrono <= 1;
+                                //cambio de luces 
+                            end
+                    end
+
+                    4: 
+                    begin
+                        if (ms >= time_E4[tabla])
+                            begin
+                                estado = estado + 1;
+                                reset_chrono <= 1;
+                                //cambio de luces 
+                            end
+                    end
+
+                    5: 
+                    begin
+                        if (ms >= time_E5[tabla])
+                            begin
+                                estado = estado + 1;
+                                reset_chrono <= 1;
+                                //cambio de luces 
+                            end
+                    end
+
+                    6:
+                    begin
+                        if (red_check_SemaforoNN_E6)
+                            estado = 1;
+                            reset_chrono <= 1;
+                    end
         end
 
-
-    if(reset) //Si se resetea, autom�ticamente se pone expired en cero.
-				begin
-					expired <= 0;
-					count <= MAXCOUNT;
-			 	end
-				 
-			else if(startTimer)	 //Si es la primera vez, startTimer==1, luego cargo la tabla de tiempos e inicializo todo.
-				begin
-					expired <= 0;
-					clkCycleCount <= CLK_ZERO_COUNT;
-					count <= timeParameter;
-				end
-
-
-    //Next-state logic
-	always @ (en, set, change, time_up_R2G, time_up_G2R) 
-		begin              
-			case (e)
-				E_OFF:		if (en) E = (set ? E_RED : E_GREEN);
-							else E = E_OFF;
-				E_RED:		if (en & !change) E = E_RED;  
-							else if (en & change) E = E_YELLOW2G;   
-							else E = E_OFF;
-				E_GREEN:	if (en & !change) E = E_GREEN;  
-							else if (en & change) E = E_YELLOW2R;  
-							else E = E_OFF; 
-				E_YELLOW2G: if (en & time_up_R2G) E = E_GREEN;   
-							else if (en & !time_up_R2G) E = E_YELLOW2G;
-							else E = E_OFF;
-				E_YELLOW2R: if (en & time_up_G2R)  E = E_RED;   
-							else if (en & !time_up_G2R) E = E_YELLOW2R;
-							else E = E_OFF;
-				default:	E = E_ERROR; 
-			endcase 
-			
-		end
-
-        // Transicion al proximo estado (secuencial)
-    always @(negedge resetn, posedge clk)
-        if (resetn == 0) y <= A;
-        else y <= Y;
-
-    // Salida (combinacional)
-    assign z = (y == C);
-endmodule
-          
 endmodule
