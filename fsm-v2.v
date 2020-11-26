@@ -35,7 +35,7 @@ module fsm
     input wire enable_general
   );
 
-  //Elemento que contar√° los segundos
+  //Elemento que contar· los segundos
 
    // timeCounter myTimeCounter ()  
 
@@ -157,18 +157,21 @@ module fsm
                 estado = 9;
 
                 case (estado)
-                    9: //estado de reset o set
+                    9: //estado de reset
                     begin
                         if (enable_general == 1)
-                            set_Semaforo_NN <= 1;
-                            set_Semaforo_NS <= 1;
-                            set_Semaforo_TH <= 1;
-                            set_Giro_NN_izq <= 1;
-                            set_Giro_NN_der <= 0;
-                            set_Giro_TH_izq <= 0;
-                            set_Semaforo_peaton_N <= 1;
-                            set_Semaforo_peaton_TH1 <= 0;
-                            set_Semaforo_peaton_TH2 <= 1;
+                        	begin
+                            	set_Semaforo_NN <= 1;
+                            	set_Semaforo_NS <= 1;
+                            	set_Semaforo_TH <= 1;
+                            	set_Giro_NN_izq <= 1;
+                            	set_Giro_NN_der <= 0;
+                            	set_Giro_TH_izq <= 0;
+                            	set_Semaforo_peaton_N <= 1;
+                            	set_Semaforo_peaton_TH1 <= 0;
+                            	set_Semaforo_peaton_TH2 <= 1;   
+                            	estado = 1;
+                            end
                     end
                     
                     1: 
@@ -244,16 +247,17 @@ module fsm
                     6:
                     begin
                         CSemaforo_NS <= 0;
-                        if (red_check_SemaforoNN_E6)
-                            estado = estado + 1;
-                            reset_chrono <= 1;
+                        if (red_check_SemaforoNN_E6) 
+                        	begin
+                            	estado = estado + 1;
+                            	reset_chrono <= 1;
 
-                            //cambio luces hacia NN
-                            CSemaforo_NN <= 1;
-                            CGiro_NN_der <= 1;
-                            CGiro_NN_izq <= 1;
-
-                    end
+                            	//cambio luces hacia NN
+                            	CSemaforo_NN <= 1;
+                            	CGiro_NN_der <= 1;
+                            	CGiro_NN_izq <= 1;     
+                            end
+                        end
 
                     7:
                     begin
@@ -261,20 +265,23 @@ module fsm
                         CGiro_NN_der <= 0;
                         CGiro_NN_izq <= 0;
 
-                        if (red_check_SemaforoNN_E6)
-                            estado = estado + 1;
-                            reset_chrono <= 1;
+                        if (red_check_SemaforoNN_E6) 
+                        	begin
+                            	estado = estado + 1;
+                            	reset_chrono <= 1;
 
-                            //mantuve estado 7 (luz amarilla)
-                            CSemaforo_NN <= 1;
-                            CGiro_NN_izq <= 1;
+                            	//mantuve estado 7 (luz amarilla)
+                            	CSemaforo_NN <= 1;
+                            	CGiro_NN_izq <= 1;  
+                            end
                     end
 
                     8:
                     begin
                         CSemaforo_NN <= 0;
                         CGiro_NN_izq <= 0;
-                        if (red_check_SemaforoNN_E6)
+                        if (red_check_SemaforoNN_E6) 
+                        	begin
                             estado = 1;
                             reset_chrono <= 1;
 
@@ -282,8 +289,8 @@ module fsm
                             CGiro_TH_izq <= 1;
                             CSemaforo_peaton_N <= 1;
                             CSemaforo_peaton_TH1 <= 1;
-
-                    end
+                            end
+                        end
         end
 
 endmodule
