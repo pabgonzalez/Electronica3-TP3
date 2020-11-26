@@ -45,7 +45,7 @@ module fsm
     parameter [2:1] D = 2'b11;
 
   //Tabla de tiempos del estado 1
-
+ /* 
 
     reg [7:0][3:0] time_E1;
     initial begin
@@ -62,7 +62,7 @@ module fsm
     //time_E1[3] = 8'd17; //Tabla D
     
   //Tabla de tiempos del estado 2
-  
+ 
     reg [3:0] [7:0] time_E2 = {8'd3, 8'd3, 8'd3, 8'd3};
     //time_E2[0] = 8'd3; //Tabla A
     //time_E2[1] = 3; //Tabla B
@@ -117,7 +117,7 @@ module fsm
     //time_E8[2] = 48; //Tabla C
     //time_E8[3] = 12; //Tabla D
     
-
+ */
     reg[3:1] tabla = A;
     reg[7:0] estado = 9;
     
@@ -193,7 +193,7 @@ module fsm
                         CGiro_TH_izq <= 0;
                         CSemaforo_peaton_N <= 0;
                         CSemaforo_peaton_TH1 <= 0;
-                        if (ms >= time_E1[tabla]*1000)
+                        if (ms >= 17*1000)
                             begin
                                 estado = estado + 1;
                                 reset_chrono <= 1;
@@ -207,7 +207,7 @@ module fsm
                     begin
                         CGiro_NN_der <= 0;
                         CSemaforo_peaton_TH2 <= 0;
-                        if (ms >= time_E2[tabla]*1000)
+                        if (ms >= 3*1000)
                             begin
                                 estado = estado + 1;
                                 reset_chrono <= 1;
@@ -219,7 +219,7 @@ module fsm
                     3: 
                     begin
                         CSemaforo_TH <=0;
-                        if (ms >= time_E3[tabla]*1000)
+                        if (ms >= 55*1000)
                             begin
                                 estado = estado + 1;
                                 reset_chrono <= 1;
@@ -231,7 +231,7 @@ module fsm
                     4: 
                     begin
                         CSemaforo_TH <=0;
-                        if (ms >= time_E4[tabla]*1000)
+                        if (ms >= 3*1000)
                             begin
                                 estado = estado + 1;
                                 reset_chrono <= 1;
@@ -249,7 +249,7 @@ module fsm
                         CSemaforo_peaton_TH2 <= 0;
                         CSemaforo_peaton_N <= 0;
                         CSemaforo_NS <= 0;
-                        if (ms >= time_E5[tabla]*1000)
+                        if (ms >= 27*1000)
                             begin
                                 estado = estado + 1;
                                 reset_chrono <= 1;

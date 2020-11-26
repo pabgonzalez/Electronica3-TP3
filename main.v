@@ -70,10 +70,9 @@ wire set_Semaforo_peaton_N;
 wire set_Semaforo_peaton_TH1;
 wire set_Semaforo_peaton_TH2;
 
-semaforo S1(.en(gpio_37), .reset(gpio_31), .set(gpio_32), .change(gpio_27), .clklf(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); 
-semaforo2 G1(.en(gpio_37), .reset(gpio_31), .set(gpio_42), .change(gpio_36), .clklf(CLK_10k), .green(gpio_43), .red(gpio_34));
+semaforo S1(.en(gpio_37), .reset(gpio_28), .set(gpio_32), .change(gpio_27), .clklf(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); 
+semaforo2 G1(.en(gpio_37), .reset(gpio_28), .set(gpio_42), .change(gpio_36), .clklf(CLK_10k), .green(gpio_43), .red(gpio_34));
 
-fsm MY_FSM();
 		 
 endmodule     
    
