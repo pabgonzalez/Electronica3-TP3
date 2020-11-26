@@ -2,7 +2,7 @@ module fsm
   (
     input wire red_check_SemaforoNN_E6,
     input wire [31:0] ms, //milisecond
-    input wire reset_chrono,
+    output reg reset_chrono,
     input wire CLK, //10kHz
     input wire SNN, //sensor Norton Norte
     input wire SNS,
@@ -35,7 +35,7 @@ module fsm
     input wire enable_general
   );
 
-  //Elemento que contará los segundos
+  //Elemento que contarï¿½ los segundos
 
    // timeCounter myTimeCounter ()  
 
@@ -45,67 +45,77 @@ module fsm
     parameter [2:1] D = 2'b11;
 
   //Tabla de tiempos del estado 1
-    reg [7:0] time_E1 [3:0];
-    time_E1[0] = 17; //Tabla A
-    time_E1[1] = 17; //Tabla B
-    time_E1[2] = 17; //Tabla C
-    time_E1[3] = 17; //Tabla D
 
+
+    reg [7:0][3:0] time_E1;
+    initial begin
+        time_E1[0] = 8'd17; //Tabla A
+        time_E1[1] = 8'd17; //Tabla B
+        time_E1[2] = 8'd17; //Tabla C
+        time_E1[3] = 8'd17; //Tabla D
+    end
+
+    //reg [3:0] time_E1 [7:0] = {8'd17, 8'd17, 8'd17, 8'd17};
+    //time_E1[0] = 8'd17; //Tabla A
+    //time_E1[1] = 8'd17; //Tabla B
+    //time_E1[2] = 8'd17; //Tabla C
+    //time_E1[3] = 8'd17; //Tabla D
+    
   //Tabla de tiempos del estado 2
   
-    reg [7:0] time_E2 [3:0];
-    time_E2[0] = 3; //Tabla A
-    time_E2[1] = 3; //Tabla B
-    time_E2[2] = 3; //Tabla C
-    time_E2[3] = 3; //Tabla D
+    reg [3:0] [7:0] time_E2 = {8'd3, 8'd3, 8'd3, 8'd3};
+    //time_E2[0] = 8'd3; //Tabla A
+    //time_E2[1] = 3; //Tabla B
+    //time_E2[2] = 3; //Tabla C
+    //time_E2[3] = 3; //Tabla D
 
   //Tabla de tiempos del estado 3
   
-    reg [7:0] time_E3 [3:0];
-    time_E3[0] = 55; //Tabla A
-    time_E3[1] = 110; //Tabla B
-    time_E3[2] = 27; //Tabla C
-    time_E3[3] = 27; //Tabla D
+    reg [3:0] [7:0] time_E3 = {8'd55, 8'd110, 8'd27, 8'd27};
+    //time_E3[0] = 8'd55; //Tabla A
+    //time_E3[1] = 110; //Tabla B
+    //time_E3[2] = 27; //Tabla C
+    //time_E3[3] = 27; //Tabla D
 
   //Tabla de tiempos del estado 4
   
-    reg [7:0] time_E4 [3:0];
-    time_E4[0] = 3; //Tabla A
-    time_E4[1] = 3; //Tabla B
-    time_E4[2] = 3; //Tabla C
-    time_E4[3] = 3; //Tabla D
+    reg [3:0] [7:0] time_E4 = {8'd3, 8'd3, 8'd3, 8'd3};
+    //time_E4[0] = 8'd3; //Tabla A
+    //time_E4[1] = 3; //Tabla B
+    //time_E4[2] = 3; //Tabla C
+    //time_E4[3] = 3; //Tabla D
 
   //Tabla de tiempos del estado 5
 
-    reg [7:0] time_E5 [3:0];
-    time_E5[0] = 27; //Tabla A
-    time_E5[1] = 14; //Tabla B
-    time_E5[2] = 14; //Tabla C
-    time_E5[3] = 54; //Tabla D
+    reg [3:0] [7:0] time_E5 = {8'd27, 8'd14, 8'd14, 8'd54};
+    //time_E5[0] = 8'd27; //Tabla A
+    //time_E5[1] = 14; //Tabla B
+    //time_E5[2] = 14; //Tabla C
+    //time_E5[3] = 54; //Tabla D
 
 //Tabla de tiempos del estado 6
   
-    reg [7:0] time_E6 [3:0];
-    time_E6[0] = 3; //Tabla A
-    time_E6[1] = 3; //Tabla B
-    time_E6[2] = 3; //Tabla C
-    time_E6[3] = 3; //Tabla D
+    reg [3:0] [7:0] time_E6 = {8'd3, 8'd3, 8'd3, 8'd3};
+    //time_E6[0] = 8'd3; //Tabla A
+    //time_E6[1] = 3; //Tabla B
+    //time_E6[2] = 3; //Tabla C
+    //time_E6[3] = 3; //Tabla D
 
   //Tabla de tiempos del estado 7
   
-    reg [7:0] time_E7 [3:0];
-    time_E7[0] = 24; //Tabla A
-    time_E7[1] = 12; //Tabla B
-    time_E7[2] = 48; //Tabla C
-    time_E7[3] = 12; //Tabla D
+    reg [3:0] [7:0] time_E7 = {8'd24, 8'd12, 8'd48, 8'd12};
+    //time_E7[0] = 8'd24; //Tabla A
+    //time_E7[1] = 12; //Tabla B
+    //time_E7[2] = 48; //Tabla C
+    //time_E7[3] = 12; //Tabla D
 
     //chequear que este en el rojo del estado 8
 
-    reg [7:0] time_E8 [3:0];
-    time_E8[0] = 24; //Tabla A
-    time_E8[1] = 12; //Tabla B
-    time_E8[2] = 48; //Tabla C
-    time_E8[3] = 12; //Tabla D
+    reg [3:0] [7:0] time_E8 = {8'd24, 8'd12, 8'd48, 8'd12};
+    //time_E8[0] = 8'd24; //Tabla A
+    //time_E8[1] = 12; //Tabla B
+    //time_E8[2] = 48; //Tabla C
+    //time_E8[3] = 12; //Tabla D
     
 
     reg[3:1] tabla = A;
@@ -295,6 +305,7 @@ module fsm
                             CSemaforo_peaton_TH1 <= 1;
                             end
                         end
+                endcase
         end
 
 endmodule

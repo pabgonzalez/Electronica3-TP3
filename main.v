@@ -24,12 +24,6 @@ output wire gpio_42,  	//red GNN Left
 output wire gpio_44, 	//green GNN Right
 output wire gpio_6,		//red GNN Right     
 
-output wire gpio_36, 	//green GTH
-output wire gpio_43,  	//red GTH  
-output wire gpio_38, 	//green GNN Left
-output wire gpio_42,  	//red GNN Left       
-output wire gpio_44, 	//green GNN Right
-output wire gpio_6,		//red GNN Right    
 
 output wire gpio_11, 	//green Pulsador TH1
 output wire gpio_9,  	//red Pulsador TH1  
