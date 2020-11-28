@@ -55,15 +55,6 @@ module fsm
 			begin 
 				tabla <= A;
 		        estado <= 1;
-				Semaforo_NN	<= RED;
-				Semaforo_NS <= RED;
-				Semaforo_TH	<= RED;
-				Giro_NN_izq	<= RED;
-				Giro_NN_der <= GREEN;
-				Giro_TH_izq <= GREEN;
-				Semaforo_peaton_N <= RED;
-				Semaforo_peaton_TH1 <= GREEN;
-				Semaforo_peaton_TH2 <= RED;
 			end
 			  //CASO 4
 			if(!SNS & !SNN & STH & (estado != 4))			
@@ -92,15 +83,6 @@ module fsm
 			
 			if(enable_general == 0)
 			begin
-				Semaforo_NN	<= OFF;
-				Semaforo_NS <= OFF;
-				Semaforo_TH	<= OFF;
-				Giro_NN_izq	<= OFF;
-				Giro_NN_der <= OFF;
-				Giro_TH_izq <= OFF;
-				Semaforo_peaton_N <= OFF;
-				Semaforo_peaton_TH1 <= OFF;
-				Semaforo_peaton_TH2 <= OFF;	
 				estado <= 0; //en el caso de entrar al loop, sigue de largo
 			end
 end	  
@@ -109,7 +91,19 @@ end
 	always @ (posedge clk)	
 		begin
 			if((finished == 1) && (enable_general == 1)) begin
-				  case(estado)
+				case(estado)
+					0:
+					begin
+						Semaforo_NN	<= OFF;
+						Semaforo_NS <= OFF;
+						Semaforo_TH	<= OFF;
+						Giro_NN_izq	<= OFF;
+						Giro_NN_der <= OFF;
+						Giro_TH_izq <= OFF;
+						Semaforo_peaton_N <= OFF;
+						Semaforo_peaton_TH1 <= OFF;
+						Semaforo_peaton_TH2 <= OFF;
+					end
 					1: 
 					begin
 						secondsToCount <= 17;
