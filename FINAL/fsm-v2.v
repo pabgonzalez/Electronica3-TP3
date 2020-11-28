@@ -45,13 +45,13 @@ module fsm
    	reg[3:1] tabla;
     reg[7:0] estado; 
 	
-	/*Ciclo de estados y actualizacion de tiempos*/
+	/*Ciclo de estados y actualizacion de tiempos: administracion de estados y
+								tiempos de semaforos vehiculares y peatonales*/
 
 	always @ (posedge clk)	
 		begin	
-		if(enable_general == 0)	 //
+		if(enable_general == 0)	 //Sistema deshabilitado ==> semaforos en cero
 			begin	
-				secondsToCount <= 0; //Todo apagado hasta habilitar enable
 				Semaforo_NN	<= OFF;
 				Semaforo_NS <= OFF;
 				Semaforo_TH	<= OFF;
@@ -62,234 +62,235 @@ module fsm
 				Semaforo_peaton_TH1 <= OFF;
 				Semaforo_peaton_TH2 <= OFF;
 			end	
-		if(enable_general == 1)
+		if(enable_general == 1)	//Sistema habilitado ==> ciclos de estados
 			begin
-			if(reset) //RESET ARRANCA EN ESTADO 1
-			begin 
+				if(reset) //
+				begin 
 				tabla <= A;
 		        estado <= 1;
+				end
+				//CASO 4
+				if(!SNS & !SNN & STH & (estado != 4))			
+				begin
+					tabla <= B;
+					estado <= 4; //thevenin al este  
+				end
+				// CASO 5
+				else if ( !SNS & SNN &  !STH & (estado != 10))
+				begin
+					tabla <= C;
+					estado <= 10; //norton al norte en verde 
+				end
+				// CASO 6
+				else if (SNS & !SNN & !STH & (estado != 7))
+				begin
+					tabla <= D;
+					estado <= 7; //norton al sur       
+				end
+				// CASO 1
+				else
+				begin
+					tabla <= A;
+				end	 
+				
+				
+				if(finished == 1) begin
+					case(estado)
+						1: 
+						begin
+							secondsToCount <= 17;
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= RED;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= GREEN;
+							Giro_TH_izq <= GREEN;
+							Semaforo_peaton_N <= RED;
+							Semaforo_peaton_TH1 <= GREEN;
+							Semaforo_peaton_TH2 <= RED;
+							estado <= estado + 1;
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end		  		
+						2:
+						begin  
+							secondsToCount <= 3;
+						    Semaforo_NN <= RED;
+							Semaforo_NS <= RED ;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= GREEN;
+							Semaforo_peaton_N <= RED;
+							Semaforo_peaton_TH1 <= GREEN;
+							Semaforo_peaton_TH2 <= GREEN; 
+		                    estado <= estado + 1;	
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end	
+						3:
+						begin  
+							secondsToCount <= 1;
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= RED ;
+							Semaforo_TH	<= YELLOW;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= RED;
+							Semaforo_peaton_TH1 <= GREEN;
+							Semaforo_peaton_TH2 <= GREEN; 
+							$display("ESTADO %d", estado);
+							estado <= estado + 1;
+							$display("TIEMPO %d", secondsToCount);
+						end
+						4:	 
+						begin 	   
+							case(tabla)
+								A: secondsToCount <= 55;
+								B: secondsToCount <= 5;
+								C: secondsToCount <= 27;
+								D: secondsToCount <= 27;
+							endcase		
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= RED ;
+							Semaforo_TH	<= GREEN;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							estado <= estado + 1;
+							Semaforo_peaton_N <= RED;
+							Semaforo_peaton_TH1 <= GREEN;
+							Semaforo_peaton_TH2 <= GREEN; 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end	 
+						5: 
+						begin 
+							secondsToCount <= 3;	
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= RED ;
+							Semaforo_TH	<= YELLOW;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							estado <= estado + 1;
+							Semaforo_peaton_N <= RED;
+							Semaforo_peaton_TH1 <= GREEN;
+							Semaforo_peaton_TH2 <= GREEN; 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end
+						6:
+						begin  
+							secondsToCount <= 1;	
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= YELLOW ;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= GREEN;
+							Semaforo_peaton_TH1 <= RED;
+							Semaforo_peaton_TH2 <= RED; 
+							estado <= estado + 1;	  
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end
+						7: 
+						begin 
+							case(tabla)
+								A: secondsToCount <= 27;
+								B: secondsToCount <= 14;
+								C: secondsToCount <= 14;
+								D: secondsToCount <= 54;
+							endcase		
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= GREEN ;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= GREEN;
+							Semaforo_peaton_TH1 <= RED;
+							Semaforo_peaton_TH2 <= RED; 
+							estado <= estado + 1;	 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end
+						8:
+						begin 
+							secondsToCount <= 3;
+							Semaforo_NN	<= RED;
+							Semaforo_NS <= YELLOW ;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= GREEN;
+							Semaforo_peaton_TH1 <= RED;
+							Semaforo_peaton_TH2 <= RED; 
+							estado <= estado + 1;	 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end
+						9:
+						begin 
+							secondsToCount <= 1;
+							Semaforo_NN	<= YELLOW;
+							Semaforo_NS <= RED ;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= RED;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= GREEN;
+							Semaforo_peaton_TH1 <= RED;
+							Semaforo_peaton_TH2 <= RED; 
+							estado <= estado + 1;	 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end
+						10:
+						begin  
+							case(tabla)
+								A: secondsToCount <= 24;
+								B: secondsToCount <= 12;
+								C: secondsToCount <= 48;
+								D: secondsToCount <= 12;
+							endcase		
+							Semaforo_NN	<= GREEN;
+							Semaforo_NS <= RED ;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= GREEN;
+							Giro_NN_der <= GREEN;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= GREEN;
+							Semaforo_peaton_TH1 <= RED;
+							Semaforo_peaton_TH2 <= RED; 
+							estado <= estado + 1;	
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end
+						11:
+						begin 
+							secondsToCount <= 3;	
+							Semaforo_NN	<= YELLOW;
+							Semaforo_NS <= RED;
+							Semaforo_TH	<= RED;
+							Giro_NN_izq	<= RED;
+							Giro_NN_der <= GREEN;
+							Giro_TH_izq <= RED;
+							Semaforo_peaton_N <= GREEN;
+							Semaforo_peaton_TH1 <= GREEN;
+							Semaforo_peaton_TH2 <= RED; 
+							estado <= 1;
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
+						end	 
+					endcase
+				end	
 			end
-			  //CASO 4
-			if(!SNS & !SNN & STH & (estado != 4))			
-			begin
-				tabla <= B;
-				estado <= 4; //thevenin al este  
-			end
-			// CASO 5
-			else if ( !SNS & SNN &  !STH & (estado != 10))
-			begin
-				tabla <= C;
-				estado <= 10; //norton al norte en verde 
-			end
-			// CASO 6
-			else if (SNS & !SNN & !STH & (estado != 7))
-			begin
-				tabla <= D;
-				estado <= 7; //norton al sur       
-			end
-			// CASO 1
-			else
-			begin
-				tabla <= A;
-			end	 
-			
-			if(finished == 1) begin
-				case(estado)
-					1: 
-					begin
-						secondsToCount <= 17;
-						Semaforo_NN	<= RED;
-						Semaforo_NS <= RED;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= GREEN;
-						Giro_TH_izq <= GREEN;
-						Semaforo_peaton_N <= RED;
-						Semaforo_peaton_TH1 <= GREEN;
-						Semaforo_peaton_TH2 <= RED;
-						estado <= estado + 1;
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end		  		
-					2:
-					begin  
-						secondsToCount <= 3;
-					    Semaforo_NN <= RED;
-						Semaforo_NS <= RED ;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= GREEN;
-						Semaforo_peaton_N <= RED;
-						Semaforo_peaton_TH1 <= GREEN;
-						Semaforo_peaton_TH2 <= GREEN; 
-	                    estado <= estado + 1;	
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end	
-					3:
-					begin  
-						secondsToCount <= 1;
-						Semaforo_NN	<= RED;
-						Semaforo_NS <= RED ;
-						Semaforo_TH	<= YELLOW;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= RED;
-						Semaforo_peaton_N <= RED;
-						Semaforo_peaton_TH1 <= GREEN;
-						Semaforo_peaton_TH2 <= GREEN; 
-						$display("ESTADO %d", estado);
-						estado <= estado + 1;
-						$display("TIEMPO %d", secondsToCount);
-					end
-					4:	 
-					begin 	   
-						case(tabla)
-							A: secondsToCount <= 55;
-							B: secondsToCount <= 5;
-							C: secondsToCount <= 27;
-							D: secondsToCount <= 27;
-						endcase		
-						Semaforo_NN	<= RED;
-						Semaforo_NS <= RED ;
-						Semaforo_TH	<= GREEN;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= RED;
-						estado <= estado + 1;
-						Semaforo_peaton_N <= RED;
-						Semaforo_peaton_TH1 <= GREEN;
-						Semaforo_peaton_TH2 <= GREEN; 
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end	 
-					5: 
-					begin 
-						secondsToCount <= 3;	
-						Semaforo_NN	<= RED;
-						Semaforo_NS <= RED ;
-						Semaforo_TH	<= YELLOW;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= RED;
-						estado <= estado + 1;
-						Semaforo_peaton_N <= RED;
-						Semaforo_peaton_TH1 <= GREEN;
-						Semaforo_peaton_TH2 <= GREEN; 
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end
-					6:
-					begin  
-						secondsToCount <= 1;	
-						Semaforo_NN	<= RED;
-						Semaforo_NS <= YELLOW ;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= RED;
-						Semaforo_peaton_N <= GREEN;
-						Semaforo_peaton_TH1 <= RED;
-						Semaforo_peaton_TH2 <= RED; 
-						estado <= estado + 1;	  
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end
-					7: 
-					begin 
-					case(tabla)
-						A: secondsToCount <= 27;
-						B: secondsToCount <= 14;
-						C: secondsToCount <= 14;
-						D: secondsToCount <= 54;
-					endcase		
-					Semaforo_NN	<= RED;
-					Semaforo_NS <= GREEN ;
-					Semaforo_TH	<= RED;
-					Giro_NN_izq	<= RED;
-					Giro_NN_der <= RED;
-					Giro_TH_izq <= RED;
-					Semaforo_peaton_N <= GREEN;
-					Semaforo_peaton_TH1 <= RED;
-					Semaforo_peaton_TH2 <= RED; 
-					estado <= estado + 1;	 
-					$display("ESTADO %d", estado);
-					$display("TIEMPO %d", secondsToCount);
-					end
-					8:
-					begin 
-						secondsToCount <= 3;
-						Semaforo_NN	<= RED;
-						Semaforo_NS <= YELLOW ;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= RED;
-						Semaforo_peaton_N <= GREEN;
-						Semaforo_peaton_TH1 <= RED;
-						Semaforo_peaton_TH2 <= RED; 
-						estado <= estado + 1;	 
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end
-					9:
-					begin 
-						secondsToCount <= 1;
-						Semaforo_NN	<= YELLOW;
-						Semaforo_NS <= RED ;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= RED;
-						Giro_TH_izq <= RED;
-						Semaforo_peaton_N <= GREEN;
-						Semaforo_peaton_TH1 <= RED;
-						Semaforo_peaton_TH2 <= RED; 
-						estado <= estado + 1;	 
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end
-					10:
-					begin  
-						case(tabla)
-							A: secondsToCount <= 24;
-							B: secondsToCount <= 12;
-							C: secondsToCount <= 48;
-							D: secondsToCount <= 12;
-						endcase		
-						Semaforo_NN	<= GREEN;
-						Semaforo_NS <= RED ;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= GREEN;
-						Giro_NN_der <= GREEN;
-						Giro_TH_izq <= RED;
-						Semaforo_peaton_N <= GREEN;
-						Semaforo_peaton_TH1 <= RED;
-						Semaforo_peaton_TH2 <= RED; 
-						estado <= estado + 1;	
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end
-					11:
-					begin 
-						secondsToCount <= 3;	
-						Semaforo_NN	<= YELLOW;
-						Semaforo_NS <= RED;
-						Semaforo_TH	<= RED;
-						Giro_NN_izq	<= RED;
-						Giro_NN_der <= GREEN;
-						Giro_TH_izq <= RED;
-						Semaforo_peaton_N <= GREEN;
-						Semaforo_peaton_TH1 <= GREEN;
-						Semaforo_peaton_TH2 <= RED; 
-						estado <= 1;
-						$display("ESTADO %d", estado);
-						$display("TIEMPO %d", secondsToCount);
-					end	 
-				endcase
-			end	
 		end
-	end
 endmodule 
 
 /*
