@@ -36,12 +36,15 @@ wire finished;
 time_fsm C1(.reset(gpio_28), .secondsToCount (seconds), .CLK(CLK_10k), .finished(finished));  
 
 
-wire [1:0] lightTH;
-wire [1:0] lightNN;
-wire [1:0] lightNS;
-wire [1:0] lightGTH;
-wire [1:0] lightGNN_R;
-wire [1:0] lightGNN_L;
+	wire [1:0] lightTH;
+	wire [1:0] lightNN;
+	wire [1:0] lightNS;
+	wire [1:0] lightGTH;
+	wire [1:0] lightGNN_R;
+	wire [1:0] lightGNN_L;
+	wire [1:0] lightPN;
+	wire [1:0] lightPTH1;
+	wire [1:0] lightPTH2;
 
 fsm fsmGeneral(.enable_general(gpio_2),
 	.clk(CLK_10k),
