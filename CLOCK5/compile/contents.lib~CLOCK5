@@ -1,0 +1,13 @@
+53
+~M 0 "" 0 $root
+~A 1 "" 0 $root
+~M 1 "../src/fsm-v2.v" 1 fsm
+~A 1 "../src/fsm-v2.v" 1 fsm
+~M 1 "../src/semaforo_fsm.v" 3 semaforo
+~A 1 "../src/semaforo_fsm.v" 3 semaforo
+~M 1 "../src/semaforo2_fsm.v" 3 semaforo2
+~A 1 "../src/semaforo2_fsm.v" 3 semaforo2
+~M 3 "../src/Test.v" 1 test
+~A 1 "../src/Test.v" 1 test
+~M 1 "../src/Time.v" 1 time_fsm
+~A 1 "../src/Time.v" 1 time_fsm

@@ -1,0 +1,6 @@
+.\src\fsm-v2.v
+.\src\semaforo_fsm.v
+.\src\semaforo2_fsm.v
+.\src\Test.v
+.\src\Time.v
+.\src\main.v

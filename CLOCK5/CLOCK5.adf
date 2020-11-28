@@ -1,0 +1,46 @@
+[Project]
+Current Flow=Generic
+VCS=0
+version=4
+Current Config=compile
+
+[Configurations]
+compile=CLOCK5
+
+[Library]
+CLOCK5=.\CLOCK5\CLOCK5.lib
+
+[SpecTracer]
+WindowVisible=0
+
+[$LibMap$]
+CLOCK5=.
+
+[Settings]
+FLOW_TYPE=HDL
+LANGUAGE=VERILOG
+REFRESH_FLOW=1
+FLOWTOOLS=NONE
+FAMILY=
+fileopenfolder=C:\My_Designs\TP3_beta\src
+
+[Files]
+/fsm-v2.v=-1
+/semaforo_fsm.v=-1
+/semaforo2_fsm.v=-1
+/Test.v=-1
+/Time.v=-1
+/main.v=-1
+
+[Files.Data]
+.\src\fsm-v2.v=Verilog Source Code
+.\src\semaforo_fsm.v=Verilog Source Code
+.\src\semaforo2_fsm.v=Verilog Source Code
+.\src\Test.v=Verilog Source Code
+.\src\Time.v=Verilog Source Code
+.\src\main.v=Verilog Source Code
+
+[HierarchyViewer]
+HierarchyInformation=
+ShowHide=ShowTopLevel
+Selected=
