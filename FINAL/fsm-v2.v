@@ -8,8 +8,8 @@
 
 
 module fsm 
-  ( input wire reset,  //lleva a estado base
-  	input wire enable_general,	//habilitacion/deshabilitacion de sistema
+  ( input wire reset,  //Reset ==> estado 1 Tabla A
+  	input wire enable,	//habilitacion/deshabilitacion de sistema
   	input wire finished,  //Flag de habilitacion/deshabilitacion de clock
     input wire clk, //Clock general 10kHz
     input wire SNN, //Sensor Norton Norte
@@ -50,7 +50,7 @@ module fsm
 
 	always @ (posedge clk)	
 		begin	
-		if(enable_general == 0)	 //Sistema deshabilitado ==> semaforos en cero
+		if(enable == 0)	 //Sistema deshabilitado ==> semaforos en cero
 			begin	
 				Semaforo_NN	<= OFF;
 				Semaforo_NS <= OFF;
@@ -62,42 +62,49 @@ module fsm
 				Semaforo_peaton_TH1 <= OFF;
 				Semaforo_peaton_TH2 <= OFF;
 			end	
-		if(enable_general == 1)	//Sistema habilitado ==> ciclos de estados
+		else	//Sistema habilitado ==> ciclos de estados
 			begin
-				if(reset) //
-				begin 
-				tabla <= A;
-		        estado <= 1;
-				end
-				//CASO 4
-				if(!SNS & !SNN & STH & (estado != 4))			
+				if(reset == 1) //Reset ==> inicializo en estado 1 tabla A por default 
+				begin 	   //dado que es igual para todas las tablas.
+					tabla <= A;	
+			        estado <= 1;
+					secondsToCount <= 17;
+				end			
+				
+				/*Asignacion de los tiempos segun estado de los sensores (acceso a tablas)*/
+				
+				else if(!SNS & !SNN & STH)			
 				begin
-					tabla <= B;
-					estado <= 4; //thevenin al este  
+					tabla <= B;	
 				end
-				// CASO 5
+				
 				else if ( !SNS & SNN &  !STH & (estado != 10))
 				begin
 					tabla <= C;
-					estado <= 10; //norton al norte en verde 
 				end
-				// CASO 6
+
 				else if (SNS & !SNN & !STH & (estado != 7))
 				begin
-					tabla <= D;
-					estado <= 7; //norton al sur       
+					tabla <= B;      
 				end
-				// CASO 1
+
 				else
 				begin
-					tabla <= A;
+					tabla <= A;		
 				end	 
 				
+				/*Loop de estados: Accede cuando recibe okay desde modulo time_fsm.
+				En cada estado se actualizan los semaforos y se pasa el tiempo a contar 
+				al clock. Al entrar al clock, se deshabilita el loop de estados hasta que 
+				se cumpla el tiempo*/
 				
-				if(finished == 1) begin
+				if((finished == 1) && (reset == 0)) begin		
+					
 					case(estado)
 						1: 
 						begin
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 17;
 							Semaforo_NN	<= RED;
 							Semaforo_NS <= RED;
@@ -108,12 +115,12 @@ module fsm
 							Semaforo_peaton_N <= RED;
 							Semaforo_peaton_TH1 <= GREEN;
 							Semaforo_peaton_TH2 <= RED;
-							estado <= estado + 1;
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
+							estado <= estado + 1;	 //Pasa a siguiente estado
 						end		  		
 						2:
 						begin  
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 3;
 						    Semaforo_NN <= RED;
 							Semaforo_NS <= RED ;
@@ -125,11 +132,11 @@ module fsm
 							Semaforo_peaton_TH1 <= GREEN;
 							Semaforo_peaton_TH2 <= GREEN; 
 		                    estado <= estado + 1;	
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end	
 						3:
-						begin  
+						begin 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 1;
 							Semaforo_NN	<= RED;
 							Semaforo_NS <= RED ;
@@ -140,14 +147,14 @@ module fsm
 							Semaforo_peaton_N <= RED;
 							Semaforo_peaton_TH1 <= GREEN;
 							Semaforo_peaton_TH2 <= GREEN; 
-							$display("ESTADO %d", estado);
 							estado <= estado + 1;
-							$display("TIEMPO %d", secondsToCount);
 						end
 						4:	 
-						begin 	   
+						begin 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							case(tabla)
-								A: secondsToCount <= 55;
+								A: secondsToCount <= 6;
 								B: secondsToCount <= 5;
 								C: secondsToCount <= 27;
 								D: secondsToCount <= 27;
@@ -162,11 +169,11 @@ module fsm
 							Semaforo_peaton_N <= RED;
 							Semaforo_peaton_TH1 <= GREEN;
 							Semaforo_peaton_TH2 <= GREEN; 
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end	 
 						5: 
-						begin 
+						begin 		
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 3;	
 							Semaforo_NN	<= RED;
 							Semaforo_NS <= RED ;
@@ -178,11 +185,11 @@ module fsm
 							Semaforo_peaton_N <= RED;
 							Semaforo_peaton_TH1 <= GREEN;
 							Semaforo_peaton_TH2 <= GREEN; 
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end
 						6:
-						begin  
+						begin  	  
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 1;	
 							Semaforo_NN	<= RED;
 							Semaforo_NS <= YELLOW ;
@@ -194,11 +201,11 @@ module fsm
 							Semaforo_peaton_TH1 <= RED;
 							Semaforo_peaton_TH2 <= RED; 
 							estado <= estado + 1;	  
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end
 						7: 
-						begin 
+						begin 	
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							case(tabla)
 								A: secondsToCount <= 27;
 								B: secondsToCount <= 14;
@@ -215,11 +222,11 @@ module fsm
 							Semaforo_peaton_TH1 <= RED;
 							Semaforo_peaton_TH2 <= RED; 
 							estado <= estado + 1;	 
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end
 						8:
 						begin 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 3;
 							Semaforo_NN	<= RED;
 							Semaforo_NS <= YELLOW ;
@@ -229,13 +236,13 @@ module fsm
 							Giro_TH_izq <= RED;
 							Semaforo_peaton_N <= GREEN;
 							Semaforo_peaton_TH1 <= RED;
-							Semaforo_peaton_TH2 <= RED; 
-							estado <= estado + 1;	 
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
+							Semaforo_peaton_TH2 <= RED;
+							estado <= estado + 1;
 						end
 						9:
 						begin 
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 1;
 							Semaforo_NN	<= YELLOW;
 							Semaforo_NS <= RED ;
@@ -245,13 +252,13 @@ module fsm
 							Giro_TH_izq <= RED;
 							Semaforo_peaton_N <= GREEN;
 							Semaforo_peaton_TH1 <= RED;
-							Semaforo_peaton_TH2 <= RED; 
-							estado <= estado + 1;	 
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
+							Semaforo_peaton_TH2 <= RED;
+							estado <= estado + 1;
 						end
 						10:
 						begin  
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							case(tabla)
 								A: secondsToCount <= 24;
 								B: secondsToCount <= 12;
@@ -268,11 +275,11 @@ module fsm
 							Semaforo_peaton_TH1 <= RED;
 							Semaforo_peaton_TH2 <= RED; 
 							estado <= estado + 1;	
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end
 						11:
-						begin 
+						begin  
+							$display("ESTADO %d", estado);
+							$display("TIEMPO %d", secondsToCount);
 							secondsToCount <= 3;	
 							Semaforo_NN	<= YELLOW;
 							Semaforo_NS <= RED;
@@ -284,8 +291,6 @@ module fsm
 							Semaforo_peaton_TH1 <= GREEN;
 							Semaforo_peaton_TH2 <= RED; 
 							estado <= 1;
-							$display("ESTADO %d", estado);
-							$display("TIEMPO %d", secondsToCount);
 						end	 
 					endcase
 				end	
@@ -293,52 +298,6 @@ module fsm
 		end
 endmodule 
 
-/*
-module time_fsm
-(
-input start_clock,
-input wire reset,
-input wire CLK,   //10k
-input reg [15:0] secondsToCount, 
-output reg finished
-);      
-
-//parameter max_time = 200*1000; //200 segundos          
-reg [15:0] count;
-reg [15:0] seconds;
-reg [7:0] countSeconds;
-parameter MAX = 9999; 
-
-always @ (posedge CLK && secondsToCount) 
-	begin
-			$display("ARRANCA%d", secondsToCount);  
-			finished <= 0;   
-			count <= count + 1;	  
-			$display("count %d", count); 
-			if (count == MAX) begin
-				seconds <= seconds + 1;
-				count <= 0; 
-				$display("seconds %d", seconds);
-			end		 
-			else if (seconds == (secondsToCount))
-				begin 
-				count <= 0;
-				seconds <= 0;
-				finished <= 1;
-				$display("Se termino");	
-				$display("TERMINOOOOOOOOOOOOOO %d", finished);
-				end	
-			//end 
-		end
-	
-	always @(reset)
-		begin  
-		$display("Estoy en reset");
-		seconds <= 0;  
-		count <= 0;
-		finished <= 1;
-		end
-endmodule      */
 
 /*
 module testfsm();

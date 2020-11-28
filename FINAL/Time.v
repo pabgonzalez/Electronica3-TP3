@@ -1,5 +1,6 @@
 module time_fsm
 (
+input wire enable,
 input wire reset,
 input wire CLK,   //10k
 input wire [15:0] secondsToCount, 
@@ -14,32 +15,31 @@ parameter MAX = 10000;
 
 
 always @ (posedge CLK && secondsToCount) 
-	begin 	
-
+	begin
+		if(reset == 1 && enable)
+		begin  
+			$display("RESET");
+			seconds <= 0;  
+			count <= 0;
+			finished <= 1;
+		end
+		else if(enable) 
+		begin
 			finished <= 0;   
 			count <= count + 1;	  
 			//$display("count %d", count); 
 			if (count == MAX) begin 
 				seconds <= seconds + 1;
 				count <= 0; 
-				$display("seconds %d", seconds);
+				$display("Segundo %d", seconds);
 			end		 
 			else if (seconds == secondsToCount)
 				begin 
 				count <= 0;
 				seconds <= 0;
 				finished <= 1;
-				$display("Se termino");	
-				$display("TERMINOOOOOOOOOOOOOO %d", finished);
+				$display("Finalizo estado %d", finished);
 				end	
-			//end 
 		end
-	
-	always @(reset)
-		begin  
-		$display("Estoy en reset");
-		seconds <= 0;  
-		count <= 0;
-		finished <= 1;
 		end
 endmodule      

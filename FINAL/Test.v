@@ -81,7 +81,9 @@ module test();
 
 	initial begin
 		enable = 1;
-		reset = 1; 
+		reset = 1;
+		#1ms
+		reset = 0;
 		#1s
 		STH_test =1;
 		SNN_test =0;
@@ -91,6 +93,7 @@ module test();
 		#100s
 		enable = 0;
 		reset = 1;
+		reset = 0;
 		STH_test =0;
 		SNN_test =1;
 		SNS_test =0;

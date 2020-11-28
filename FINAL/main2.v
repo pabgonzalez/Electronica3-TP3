@@ -33,7 +33,7 @@ SB_LFOSC OSCInst0(.CLKLFEN(1'b1), .CLKLFPU(1'b1), .CLKLF(CLK_10k));
 
 wire [15:0] seconds;
 wire finished;	  
-time_fsm C1(.reset(gpio_28), .secondsToCount (seconds), .CLK(CLK_10k), .finished(finished));  
+time_fsm clock(.enable(gpio_2), .reset(gpio_28), .secondsToCount (seconds), .CLK(CLK_10k), .finished(finished));  
 
 
 	wire [1:0] lightTH;
@@ -46,7 +46,7 @@ time_fsm C1(.reset(gpio_28), .secondsToCount (seconds), .CLK(CLK_10k), .finished
 	wire [1:0] lightPTH1;
 	wire [1:0] lightPTH2;
 
-fsm fsmGeneral(.enable_general(gpio_2),
+fsm fsmGeneral(.enable(gpio_2),
 	.clk(CLK_10k),
 	.SNN(gpio_4), 
     .SNS(gpio_48),
