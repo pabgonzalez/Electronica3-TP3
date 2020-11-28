@@ -47,9 +47,16 @@ module fsm
 	
 	/*Declaracion de variables internas para tablas y estados*/
 	
-	always @ ((SNS & SNN & STH) or reset or enable_general)	 
-		begin
-			if(enable_general == 1)
+		
+  	//loop de estados
+	always @ (posedge clk or SNS or SNN or STH or reset or enable_general)	
+		begin	
+		if(enable_general == 0)
+			begin
+				estado <= 0; //Todo apagado hasta habilitad enable	
+				secondsToCount <= 0;
+			end	
+		if(enable_general == 1)
 			begin
 			if(reset) //RESET ARRANCA EN ESTADO 1
 			begin 
@@ -79,18 +86,8 @@ module fsm
 			begin
 				tabla <= A;
 			end	 
-			end	
 			
-			if(enable_general == 0)
-			begin
-				estado <= 0; //en el caso de entrar al loop, sigue de largo
-			end
-end	  
-		
-  	//loop de estados
-	always @ (posedge clk)	
-		begin
-			if((finished == 1) && (enable_general == 1)) begin
+			if(finished == 1) begin
 				case(estado)
 					0:
 					begin
@@ -298,6 +295,7 @@ end
 				endcase
 			end	
 		end
+	end
 endmodule 
 
 /*
