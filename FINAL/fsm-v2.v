@@ -49,11 +49,11 @@ module fsm
 	
 		
   	//loop de estados
-	always @ (posedge clk or SNS or SNN or STH or reset or enable_general)	
+	always @ (posedge clk)	
 		begin	
 		if(enable_general == 0)
 			begin
-				estado <= 0; //Todo apagado hasta habilitad enable	
+				estado <= 0; //Todo apagado hasta habilitar enable	
 				secondsToCount <= 0;
 			end	
 		if(enable_general == 1)
