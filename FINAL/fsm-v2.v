@@ -1,51 +1,51 @@
-module fsm 
-  ( input wire reset,
-  	input wire enable_general,
-  	input wire finished,
-    input wire clk, //10kHz
-    input wire SNN, //sensor Norton Norte
-    input wire SNS,
-    input wire STH,	
-    output reg [1:0] Semaforo_NN, //change S1
-    output reg [1:0] Semaforo_NS,
-    output reg [1:0] Semaforo_TH,
-    output reg [1:0] Giro_NN_izq,
-    output reg [1:0] Giro_NN_der,
-    output reg [1:0] Giro_TH_izq,
-    output reg [1:0] Semaforo_peaton_N,
-    output reg [1:0] Semaforo_peaton_TH1,
-    output reg [1:0] Semaforo_peaton_TH2, 
-	output reg [15:0] secondsToCount
-  );
+/*********************************************************************************
+*		Modulo fsm: 															 *
+*
+*
+*
+**********************************************************************************/
 
-	//Elemento que contaria los segundos
+
+
+module fsm 
+  ( input wire reset,  //lleva a estado base
+  	input wire enable_general,	//habilitacion/deshabilitacion de sistema
+  	input wire finished,  //Flag de habilitacion/deshabilitacion de clock
+    input wire clk, //Clock general 10kHz
+    input wire SNN, //Sensor Norton Norte
+    input wire SNS,	//Sensor Norton Sur
+    input wire STH,	//Sensor Thevenin
+    output reg [1:0] Semaforo_NN, //Senal de estado de semaforo calle Norton Norte
+    output reg [1:0] Semaforo_NS, //Senal de estado de semaforo	calle Norton Norte
+    output reg [1:0] Semaforo_TH, //Senal de estado de semaforo	calle Norton Norte
+    output reg [1:0] Giro_NN_izq, //Senal de estado de semaforo	Giro calle Norton izquierda
+    output reg [1:0] Giro_NN_der, //Senal de estado de semaforo	Giro calle Norton derecha
+    output reg [1:0] Giro_TH_izq, //Senal de estado de semaforo	Giro calle Thevenin izquierda
+    output reg [1:0] Semaforo_peaton_N, //Senal de estado de semaforo peatonal Norton
+    output reg [1:0] Semaforo_peaton_TH1, //Senal de estado de semaforo peatonal Thevenin 1
+    output reg [1:0] Semaforo_peaton_TH2, //Senal de estado de semaforo peatonal Thevenin 1
+	output reg [15:0] secondsToCount); //Tiempo de estado
+
+	
+	/*Definicion de tablas de tiempos*/
 
     parameter [2:1] A = 2'b00;
     parameter [2:1] B = 2'b01;
     parameter [2:1] C = 2'b10;
     parameter [2:1] D = 2'b11;	    
 	
+	/*Definicion de estados de semaforos*/
 	parameter RED = 2'b00;
 	parameter YELLOW = 2'b01;
 	parameter GREEN = 2'b10;
-	parameter OFF = 2'b11;
+	parameter OFF = 2'b11; 
+	
+	/*Declaracion de variables internas para tablas y estados*/
 
    	reg[3:1] tabla;
-    reg[7:0] estado;
+    reg[7:0] estado; 
 	
-	always @ (posedge enable_general)	
-		begin 
-			Semaforo_NN	<= RED;
-			Semaforo_NS <= RED;
-			Semaforo_TH	<= RED;
-			Giro_NN_izq	<= RED;
-			Giro_NN_der <= GREEN;
-			Giro_TH_izq <= GREEN;
-			Semaforo_peaton_N <= RED;
-			Semaforo_peaton_TH1 <= GREEN;
-			Semaforo_peaton_TH2 <= RED;
-		end
-
+	/*Declaracion de variables internas para tablas y estados*/
 	
 	always @ ((SNS & SNN & STH) or reset or enable_general)	 
 		begin

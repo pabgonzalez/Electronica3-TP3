@@ -67,8 +67,8 @@ fsm fsmGeneral(.enable_general(gpio_2),
 semaforo semaforo_thevenin(.light(lightTH), .clk(CLK_10k), .green(gpio_26), .yellow(gpio_25), .red(gpio_23)); //thevenin
 semaforo semaforo_nortonN(.light(lightNN), .clk(CLK_10k), .green(gpio_35), .yellow(gpio_32), .red(gpio_27)); //norton norte 
 semaforo semaforo_nortonS(.light(lightNS), .clk(CLK_10k), .green(gpio_34), .yellow(gpio_37), .red(gpio_31)); //norton sur
-
-semaforo2 giro_thevenin(.light(lightGTH), .clk(CLK_10k), .green(gpio_43), .red(gpio_36)); //G TH
+																		   														 
+semaforo2 giro_thevenin(.light(lightGTH), .clk(CLK_10k), .green(gpio_36), .red(gpio_43)); //G TH
 semaforo2 giro_NN_L(.light(lightGNN_L), .clk(CLK_10k), .green(gpio_38), .red(gpio_42)); //G NN L
 semaforo2 giro_NN_R(.light(lightGNN_R), .clk(CLK_10k), .green(gpio_44), .red(gpio_6)); //G NN R		 
 
