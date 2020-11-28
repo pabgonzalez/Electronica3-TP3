@@ -31,8 +31,8 @@ output wire gpio_13		//red peatonal N
 //Clocks
 SB_LFOSC OSCInst0(.CLKLFEN(1'b1), .CLKLFPU(1'b1), .CLKLF(CLK_10k));      
 
-reg [15:0] seconds;
-reg finished;	  
+wire [15:0] seconds;
+wire finished;	  
 time_fsm C1(.reset(gpio_28), .secondsToCount (seconds), .CLK(CLK_10k), .finished(finished));  
 
 
