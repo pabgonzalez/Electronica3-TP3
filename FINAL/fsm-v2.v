@@ -45,16 +45,22 @@ module fsm
    	reg[3:1] tabla;
     reg[7:0] estado; 
 	
-	/*Declaracion de variables internas para tablas y estados*/
-	
-		
-  	//loop de estados
+	/*Ciclo de estados y actualizacion de tiempos*/
+
 	always @ (posedge clk)	
 		begin	
-		if(enable_general == 0)
-			begin
-				estado <= 0; //Todo apagado hasta habilitar enable	
-				secondsToCount <= 0;
+		if(enable_general == 0)	 //
+			begin	
+				secondsToCount <= 0; //Todo apagado hasta habilitar enable
+				Semaforo_NN	<= OFF;
+				Semaforo_NS <= OFF;
+				Semaforo_TH	<= OFF;
+				Giro_NN_izq	<= OFF;
+				Giro_NN_der <= OFF;
+				Giro_TH_izq <= OFF;
+				Semaforo_peaton_N <= OFF;
+				Semaforo_peaton_TH1 <= OFF;
+				Semaforo_peaton_TH2 <= OFF;
 			end	
 		if(enable_general == 1)
 			begin
@@ -89,18 +95,6 @@ module fsm
 			
 			if(finished == 1) begin
 				case(estado)
-					0:
-					begin
-						Semaforo_NN	<= OFF;
-						Semaforo_NS <= OFF;
-						Semaforo_TH	<= OFF;
-						Giro_NN_izq	<= OFF;
-						Giro_NN_der <= OFF;
-						Giro_TH_izq <= OFF;
-						Semaforo_peaton_N <= OFF;
-						Semaforo_peaton_TH1 <= OFF;
-						Semaforo_peaton_TH2 <= OFF;
-					end
 					1: 
 					begin
 						secondsToCount <= 17;
